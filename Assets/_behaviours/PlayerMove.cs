@@ -6,7 +6,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField]
     private CharacterController m_control;
     [SerializeField]
-    private PlayerInput m_input;
+    private PlayerInput m_directionalInput;
+    [SerializeField]
+    private PlayerInput m_switchInput;
     [SerializeField]
     private bool m_useLocalSpace = true;
     [SerializeField]
@@ -15,22 +17,18 @@ public class PlayerMove : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        Vector2 move = m_input.GetVector3().normalized;
+        bool canMove = m_switchInput == null || m_switchInput.IsOn();
 
-        if (m_useLocalSpace)
+        if (canMove)
         {
-            move = transform.TransformVector(move);
+            Vector2 move = m_directionalInput.GetVector3().normalized * m_maxSpeed;
+
+            if (m_useLocalSpace)
+            {
+                move = transform.TransformVector(move);
+            }
+
+            m_control.Move(move);
         }
-
-        // TODO: m_maxSpeed does not work properly for local space
-        move *= m_maxSpeed;
-
-        m_control.Move(move);
 	}
-
-    void OnGUI()
-    {
-        GUILayout.Label("GlobalSpeed: " + m_control.velocity.magnitude);
-        GUILayout.Label("LocalSpeed: " + transform.InverseTransformVector(m_control.velocity).magnitude);
-    }
 }

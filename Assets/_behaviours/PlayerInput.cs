@@ -12,4 +12,9 @@ public class PlayerInput : MonoBehaviour
     {
         return Vector3.zero;
     }
+
+    public virtual bool IsOn()
+    {
+        return false;
+    }
 }
