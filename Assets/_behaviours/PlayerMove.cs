@@ -3,41 +3,34 @@ using System.Collections;
 
 public class PlayerMove : MonoBehaviour
 {
-	[SerializeField]
-	private Rigidbody2D m_reference;
-	[SerializeField]
-	private PlayerInput m_input;
-	[SerializeField]
-	private float m_maxSpeed;
     [SerializeField]
-    private float m_acceleration;
+    private CharacterController m_control;
+    [SerializeField]
+    private PlayerInput m_input;
+    [SerializeField]
+    private bool m_useLocalSpace = true;
+    [SerializeField]
+    private float m_maxSpeed;
+	
+	// Update is called once per frame
+	void Update ()
+    {
+        Vector2 move = m_input.GetVector3().normalized;
 
-	void FixedUpdate()
-	{
-		Vector2 move = m_input.GetVector2 ().normalized;
+        if (m_useLocalSpace)
+        {
+            move = transform.TransformVector(move);
+        }
 
-        // Impulse
-        Vector2 impulse = Vector2.zero;
-        
-        if(!MathHelpers.SameSign(move.x, rigidbody2D.velocity.x))
-        {
-            impulse.x = -rigidbody2D.velocity.x;
-        }
-        
-        if(!MathHelpers.SameSign(move.y, rigidbody2D.velocity.y))
-        {
-            impulse.y = -rigidbody2D.velocity.y;
-        }
-        
-        rigidbody2D.AddForce(impulse, ForceMode2D.Impulse);
-        
-        // Force
-        rigidbody2D.AddForce (m_reference.GetRelativeVector (move) * m_acceleration);
-        
-        // Limit velocity           
-        if (m_reference.GetRelativeVector (rigidbody2D.velocity).magnitude >= m_maxSpeed) 
-        {
-            rigidbody2D.velocity = rigidbody2D.velocity.normalized * m_maxSpeed;        
-        }
+        // TODO: m_maxSpeed does not work properly for local space
+        move *= m_maxSpeed;
+
+        m_control.Move(move);
 	}
+
+    void OnGUI()
+    {
+        GUILayout.Label("GlobalSpeed: " + m_control.velocity.magnitude);
+        GUILayout.Label("LocalSpeed: " + transform.InverseTransformVector(m_control.velocity).magnitude);
+    }
 }

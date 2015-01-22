@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WASDInput : PlayerInput
+public class WASDTopDown : PlayerInput
 {
 	public override Vector2 GetVector2 ()
 	{
@@ -29,4 +29,11 @@ public class WASDInput : PlayerInput
 
 		return vec;
 	}
+
+    public override Vector3 GetVector3()
+    {
+        Vector2 vec2 = GetVector2();
+
+        return new Vector3(vec2.x, vec2.y, 0);
+    }
 }

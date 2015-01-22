@@ -7,4 +7,9 @@ public class PlayerInput : MonoBehaviour
 	{
 		return Vector2.zero;
 	}
+
+    public virtual Vector3 GetVector3()
+    {
+        return Vector3.zero;
+    }
 }
